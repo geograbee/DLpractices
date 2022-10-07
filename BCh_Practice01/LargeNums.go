@@ -5,6 +5,9 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
+	"strconv"
+	"strings"
+	"time"
 )
 
 func main() {
@@ -79,7 +82,7 @@ func ShowRandomKeys() {
 }
 
 func randomHex(n int) (string, error) {
-	var bytes []byte = make([]byte, n)
+	var bytes []byte = make([]byte, n/2)
 	if _, err := rand.Read(bytes); err != nil {
 		return "", err
 	}
@@ -87,13 +90,65 @@ func randomHex(n int) (string, error) {
 }
 
 func BruteForce() {
-	/*var lenghts []byte = []byte{8, 16, 32, 64, 128}
-	randomLength := math.rand rand.Read(lenghts)
-	pick := lenghts[randomLength]
-	Key, _ := randomHex(pick)
-	for i := make([]byte, pick); ; {
-
+	var n int
+	fmt.Print("Enter your hex key length: ")
+	fmt.Scan(&n)
+	start := time.Now()
+	randKey, _ := randomHex(n)
+	randKey = strings.ToUpper(randKey)
+	fmt.Printf("Random %d-bit key - 0x"+randKey, n)
+	fmt.Print("\n")
+	var incArr []int
+	for i := 0; i < 2*n; i++ {
+		incArr = append(incArr, 0)
 	}
-	i := big.Int(0)
-	for i.Cmp() == 1{*/
+	var incStr string = intArrToString(incArr)
+	var incByte []byte = []byte(incStr)
+	var inc []byte = hexInc(incByte)
+	for {
+		if strings.Compare(string(inc), randKey) != 0 {
+			inc = hexInc(inc)
+		} else {
+			break
+		}
+	}
+	fmt.Println(randKey, "->", string(inc))
+	duration := time.Since(start)
+	fmt.Printf("Brute force was complited in %.0f seconds", duration.Seconds())
+	fmt.Println()
+}
+
+func intArrToString(elems []int) string {
+	b := ""
+	for _, v := range elems {
+		b += strconv.Itoa(v)
+	}
+	return b
+}
+
+func hexInc(v []byte) []byte {
+	var r = make([]byte, len(v))
+	carry := true
+	for i := len(v) - 1; i >= 0; i-- {
+		val := v[i]
+		if val > 64 {
+			val -= 64 - 9
+		} else {
+			val -= 48
+		}
+		if carry {
+			val += 1
+			carry = false
+		}
+		if val == 16 {
+			val = 0
+			carry = true
+		}
+		if val >= 10 {
+			r[i] = val + 64 - 9
+		} else {
+			r[i] = val + 48
+		}
+	}
+	return r
 }
