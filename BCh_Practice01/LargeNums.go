@@ -18,8 +18,8 @@ func main() {
 		fmt.Println("3. Brute force")
 		fmt.Println("0. Exit")
 		fmt.Print("Enter the number of chosen operation: ")
-		var input int
-		fmt.Scan(&input)
+		var input int = 3
+		//fmt.Scan(&input)
 		if input == 1 {
 			ShowKeysNumber()
 		}
@@ -90,16 +90,16 @@ func randomHex(n int) (string, error) {
 }
 
 func BruteForce() {
-	var n int
-	fmt.Print("Enter your hex key length: ")
-	fmt.Scan(&n)
+	var n int = 16
+	//fmt.Print("Enter your hex key length: ")
+	//fmt.Scan(&n)
 	start := time.Now()
 	randKey, _ := randomHex(n)
 	randKey = strings.ToUpper(randKey)
-	fmt.Printf("Random %d-bit key - 0x"+randKey, n)
+	fmt.Printf("Random %d-bit key - "+randKey, n)
 	fmt.Print("\n")
 	var incArr []int
-	for i := 0; i < 2*n; i++ {
+	for i := 0; i < n; i++ {
 		incArr = append(incArr, 0)
 	}
 	var incStr string = intArrToString(incArr)
@@ -114,8 +114,8 @@ func BruteForce() {
 	}
 	fmt.Println(randKey, "->", string(inc))
 	duration := time.Since(start)
-	fmt.Printf("Brute force was complited in %.0f seconds", duration.Seconds())
-	fmt.Println()
+	fmt.Print("Brute force was complited in ", big.NewInt(duration.Milliseconds()))
+	fmt.Println(" milliseconds")
 }
 
 func intArrToString(elems []int) string {
@@ -126,11 +126,11 @@ func intArrToString(elems []int) string {
 	return b
 }
 
-func hexInc(v []byte) []byte {
-	var r = make([]byte, len(v))
+func hexInc(inc []byte) []byte {
+	var result = make([]byte, len(inc))
 	carry := true
-	for i := len(v) - 1; i >= 0; i-- {
-		val := v[i]
+	for i := len(inc) - 1; i >= 0; i-- {
+		val := inc[i]
 		if val > 64 {
 			val -= 64 - 9
 		} else {
@@ -145,10 +145,10 @@ func hexInc(v []byte) []byte {
 			carry = true
 		}
 		if val >= 10 {
-			r[i] = val + 64 - 9
+			result[i] = val + 64 - 9
 		} else {
-			r[i] = val + 48
+			result[i] = val + 48
 		}
 	}
-	return r
+	return result
 }
