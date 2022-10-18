@@ -54,7 +54,9 @@ func enterHex() (string, int) {
 		if matched {
 			break
 		} else {
-			err = err
+			if err != nil {
+				fmt.Println(err)
+			}
 			fmt.Println("Please, enter hex value ([0-9] and [a-f])!")
 		}
 	}
@@ -73,7 +75,9 @@ func enterEndian() (string, int) {
 		if matched {
 			break
 		} else {
-			err = err
+			if err != nil {
+				fmt.Println(err)
+			}
 			fmt.Println("Please, enter integer value!")
 		}
 	}
@@ -104,11 +108,10 @@ func hexToLittleEndian() {
 	var hex string = string(hexArrRev)
 	value, err := strconv.ParseUint(hex, 16, 64)
 	if err != nil {
-		fmt.Println(err)
-		return
+		fmt.Println("Something went wrong!")
+	} else {
+		fmt.Println("Your little-endian value: ", value)
 	}
-	fmt.Println("Your little-endian value: ", value)
-
 }
 
 func hexToBigEndian() {
@@ -116,32 +119,33 @@ func hexToBigEndian() {
 	var hexString string = formHex(enterHex, enterLength)
 	fmt.Println("Your hex: ", hexString)
 	var value, ok = new(big.Int).SetString(hexString, 10)
-	ok = ok
-	fmt.Println("Your big-endian value: ", value)
+	if !ok {
+		fmt.Println("Something went wrong!")
+	} else {
+		fmt.Println("Your big-endian value: ", value)
+	}
 }
 
 func littleEndianToHex() {
 	var enterValue, enterLength = enterEndian()
 	intValue, err := strconv.Atoi(enterValue)
-	err = err
-	var hex string = strconv.FormatInt(int64(intValue), 16)
-	var hexString string = formHex(hex, enterLength)
-	var hexStringArr []byte = []byte(hexString)
-	var hexArr []byte = hexStringArr[2:]
-	var hexArrRev []byte
-	for i := len(hexArr) - 1; i >= 0; i-- {
-		hexArrRev = append(hexArrRev, hexArr[i])
+	if err != nil {
+		fmt.Println("Something went wrong!")
+	} else {
+		var hex string = strconv.FormatInt(int64(intValue), 16)
+		var hexString string = formHex(hex, enterLength)
+		fmt.Println("Your hex value: ", hexString)
 	}
-	var hexArrRevString string = "0x" + string(hexArrRev)
-	fmt.Println("Your hex value: ", hexArrRevString)
 
 }
 
 func bigEndianToHex() {
 	var enterValue, enterLength = enterEndian()
 	var value, ok = new(big.Int).SetString(enterValue, 10)
-	ok = ok
-	var hex string = formHex(value.Text(16), enterLength)
-	fmt.Println("Your hex value: ", hex)
-
+	if !ok {
+		fmt.Println("Something went wrong!")
+	} else {
+		var hex string = formHex(value.Text(16), enterLength)
+		fmt.Println("Your hex value: ", hex)
+	}
 }
