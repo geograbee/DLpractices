@@ -18,8 +18,8 @@ func main() {
 		fmt.Println("3. Brute force")
 		fmt.Println("0. Exit")
 		fmt.Print("Enter the number of chosen operation: ")
-		var input int
-		fmt.Scan(&input)
+		var input int = 3
+		//fmt.Scan(&input)
 		if input == 1 {
 			ShowKeysNumber()
 		}
@@ -90,9 +90,9 @@ func randomHex(n int) (string, error) {
 }
 
 func BruteForce() {
-	var n int
-	fmt.Print("Enter your hex key length: ")
-	fmt.Scan(&n)
+	var n int = 8
+	//fmt.Print("Enter your hex key length: ")
+	//fmt.Scan(&n)
 	start := time.Now()
 	randKey, _ := randomHex(n)
 	randKey = strings.ToUpper(randKey)
