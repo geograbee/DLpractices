@@ -38,7 +38,7 @@ func main() {
 
 func formHex(hex string, length int) string {
 	var hexArr []byte = []byte(hex)
-	for i := 0; i < length-len(hex); i++ {
+	for i := 0; i < 2*length-len(hex); i++ {
 		hexArr = append(hexArr, '0')
 	}
 	var hexString string = "0x" + string(hexArr)
@@ -118,8 +118,9 @@ func hexToBigEndian() {
 	var enterHex, enterLength = enterHex()
 	var hexString string = formHex(enterHex, enterLength)
 	fmt.Println("Your hex: ", hexString)
-	var value, ok = new(big.Int).SetString(hexString, 10)
-	if !ok {
+	value := new(big.Int)
+	var _, err = fmt.Sscan(hexString, value)
+	if err != nil {
 		fmt.Println("Something went wrong!")
 	} else {
 		fmt.Println("Your big-endian value: ", value)
@@ -133,7 +134,13 @@ func littleEndianToHex() {
 		fmt.Println("Something went wrong!")
 	} else {
 		var hex string = strconv.FormatInt(int64(intValue), 16)
-		var hexString string = formHex(hex, enterLength)
+		var hexArr []byte = []byte(hex)
+		var hexArrRev []byte
+		for i := len(hexArr) - 1; i >= 0; i-- {
+			hexArrRev = append(hexArrRev, hexArr[i])
+		}
+		var hexRev string = string(hexArrRev)
+		var hexString string = formHex(hexRev, enterLength)
 		fmt.Println("Your hex value: ", hexString)
 	}
 
@@ -142,10 +149,10 @@ func littleEndianToHex() {
 func bigEndianToHex() {
 	var enterValue, enterLength = enterEndian()
 	var value, ok = new(big.Int).SetString(enterValue, 10)
-	if !ok {
-		fmt.Println("Something went wrong!")
-	} else {
+	if ok {
 		var hex string = formHex(value.Text(16), enterLength)
 		fmt.Println("Your hex value: ", hex)
+	} else {
+		fmt.Println("Something went wrong!")
 	}
 }
